@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "80:8000"
+    depends_on:
+      - db
+    environment:
+      - "DATABASE_HOST=db"
+      - "DATABASE_PORT=5432"
+      - "DATABASE_NAME=revooz"
+      - "DATABASE_USER=revoozuser"
+      - "DATABASE_PASSWORD=revoozpassword"
+
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_DB=revooz"
+      - "POSTGRES_USER=revoozuser"
+      - "POSTGRES_PASSWORD=revoozpassword"
+
+volumes:
+  postgres_data:
