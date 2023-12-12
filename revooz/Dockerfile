@@ -8,16 +8,13 @@ WORKDIR /app
 RUN pip install pipenv
 
 # Copy the Pipfile and Pipfile.lock into the container at /app
-COPY Pipfile /app/
+COPY Pipfile Pipfile.lock /app/
 
-# Copy the requirements.txt file into the container at /app
-COPY requirements.txt /app/
+# Install the dependencies from Pipfile.lock
+RUN pipenv install --deploy --ignore-pipfile
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Generate Pipfile.lock and install dependencies
-RUN pipenv lock && pipenv install --deploy --ignore-pipfile
+# Setting the PATH to use pipenv for the following commands
+ENV PATH="/root/.local/bin:$PATH"
 
 # Copy the current directory contents into the container at /app
 COPY . /app

@@ -15,10 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
+from revooz import views
 from revooz.views import hello_world
+
+router = routers.DefaultRouter()
+router.register(r'pages', views.PageView, 'page')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
     path('', hello_world),  # Set the hello_world view for the root URL
 ]
