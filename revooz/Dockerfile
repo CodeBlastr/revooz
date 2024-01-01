@@ -4,6 +4,12 @@ FROM python:3.10
 # Set the working directory in the container
 WORKDIR /app
 
+# Install Node.js
+# First, update the list of packages
+RUN apt-get update 
+# Install Node.js and npm
+RUN apt-get install -y nodejs npm
+
 # Install pipenv
 RUN pip install pipenv
 
