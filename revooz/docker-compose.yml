@@ -16,7 +16,16 @@ services:
       - "DATABASE_NAME=revooz"
       - "DATABASE_USER=revoozuser"
       - "DATABASE_PASSWORD=revoozpassword"
-
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile  # If you have a separate Dockerfile for the React app, specify it here
+    volumes:
+      - ./frontend:/app/frontend  # Adjust this to the correct path of your React app
+    command: npm start
+    ports:
+      - "3000:3000"
+    working_dir: /app/frontend  # Set the working directory to the React app directory
   db:
     image: postgres:latest
     volumes:
