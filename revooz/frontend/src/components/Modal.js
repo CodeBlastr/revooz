@@ -40,36 +40,36 @@ export default class CustomModal extends Component {
         <ModalBody>
           <Form>
             <FormGroup>
-              <Label for="todo-title">Title</Label>
+              <Label for="page-title">Page Title</Label>
               <Input
                 type="text"
-                id="todo-title"
+                id="page-title"
                 name="title"
                 value={this.state.activeItem.title}
                 onChange={this.handleChange}
-                placeholder="Enter Todo Title"
+                placeholder="Enter Page Title"
               />
             </FormGroup>
             <FormGroup>
-              <Label for="todo-description">Description</Label>
+              <Label for="page-description">Description</Label>
               <Input
                 type="text"
-                id="todo-description"
+                id="page-description"
                 name="description"
                 value={this.state.activeItem.description}
                 onChange={this.handleChange}
-                placeholder="Enter Todo description"
+                placeholder="Enter Page description"
               />
             </FormGroup>
             <FormGroup check>
               <Label check>
                 <Input
                   type="checkbox"
-                  name="completed"
-                  checked={this.state.activeItem.completed}
+                  name="active"
+                  checked={this.state.activeItem.active}
                   onChange={this.handleChange}
                 />
-                Completed
+                Active
               </Label>
             </FormGroup>
           </Form>

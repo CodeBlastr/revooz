@@ -1,30 +1,40 @@
 import React, { Component } from "react";
 import Modal from "./components/Modal";
 import axios from "axios";
+import { getCookie } from "./utils"; // Import the utility function
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewCompleted: false,
-      todoList: [],
+      viewActive: false,
+      pageList: [],
       modal: false,
       activeItem: {
         title: "",
         description: "",
-        completed: false,
+        active: false,
       },
     };
   }
 
   componentDidMount() {
+    this.setAxiosDefaults();
     this.refreshList();
+  }
+
+  setAxiosDefaults = () => {
+    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+    axios.defaults.xsrfCookieName = 'csrftoken';
+    axios.defaults.headers.post['X-CSRFToken'] = getCookie('csrftoken');
+    axios.defaults.headers.put['X-CSRFToken'] = getCookie('csrftoken');
+    axios.defaults.headers.delete['X-CSRFToken'] = getCookie('csrftoken');
   }
 
   refreshList = () => {
     axios
       .get("/api/pages/")
-      .then((res) => this.setState({ todoList: res.data }))
+      .then((res) => this.setState({ pageList: res.data }))
       .catch((err) => console.log(err));
   };
 
@@ -53,7 +63,7 @@ class App extends Component {
   };
 
   createItem = () => {
-    const item = { title: "", description: "", completed: false };
+    const item = { title: "", description: "", active: false };
 
     this.setState({ activeItem: item, modal: !this.state.modal });
   };
@@ -62,37 +72,37 @@ class App extends Component {
     this.setState({ activeItem: item, modal: !this.state.modal });
   };
 
-  displayCompleted = (status) => {
+  displayActive = (status) => {
     if (status) {
-      return this.setState({ viewCompleted: true });
+      return this.setState({ viewActive: true });
     }
 
-    return this.setState({ viewCompleted: false });
+    return this.setState({ viewActive: false });
   };
 
   renderTabList = () => {
     return (
       <div className="nav nav-tabs">
         <span
-          onClick={() => this.displayCompleted(true)}
-          className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
+          onClick={() => this.displayActive(true)}
+          className={this.state.viewActive ? "nav-link active" : "nav-link"}
         >
-          Complete
+          Active
         </span>
         <span
-          onClick={() => this.displayCompleted(false)}
-          className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
+          onClick={() => this.displayActive(false)}
+          className={this.state.viewActive ? "nav-link" : "nav-link active"}
         >
-          Incomplete
+          Inactive
         </span>
       </div>
     );
   };
 
   renderItems = () => {
-    const { viewCompleted } = this.state;
-    const newItems = this.state.todoList.filter(
-      (item) => item.completed === viewCompleted
+    const { viewActive } = this.state;
+    const newItems = this.state.pageList.filter(
+      (item) => item.active === viewActive
     );
 
     return newItems.map((item) => (
@@ -101,8 +111,8 @@ class App extends Component {
         className="list-group-item d-flex justify-content-between align-items-center"
       >
         <span
-          className={`todo-title mr-2 ${
-            this.state.viewCompleted ? "completed-todo" : ""
+          className={`page-title mr-2 ${
+            this.state.viewActive ? "active-page" : ""
           }`}
           title={item.description}
         >
@@ -138,7 +148,7 @@ class App extends Component {
                   className="btn btn-primary"
                   onClick={this.createItem}
                 >
-                  Add task
+                  Add page
                 </button>
               </div>
               {this.renderTabList()}
